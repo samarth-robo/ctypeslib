@@ -25,7 +25,11 @@ try:
     for version in ["libclang", "clang", "clang-6.0", "clang-5.0", "clang-4.0", "clang-3.9", "clang-3.8", "clang-3.7"]:
         if find_library(version) is not None:
             from clang import cindex
-            cindex.Config.set_library_file(find_library(version))
+            filename = find_library(version)
+            if os.path.isdir(filename):
+              pre, sup = os.path.split(filename)
+              filename = os.path.join(pre, 'lib{:s}.so'.format(sup))
+            cindex.Config.set_library_file(filename)
             break
 except ImportError as e:
     print(e)
